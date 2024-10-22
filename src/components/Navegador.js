@@ -7,8 +7,10 @@ import {
   VideoCameraOutlined,
 } from '@ant-design/icons';
 import { Button, Layout, Menu, theme } from 'antd';
+
+
 const { Header, Sider, Content } = Layout;
-const App = () => {
+const Navegador = () => {
   const [collapsed, setCollapsed] = useState(false);
   const {
     token: { colorBgContainer, borderRadiusLG },
@@ -20,7 +22,7 @@ const App = () => {
         <Menu
           theme="dark"
           mode="inline"
-          defaultSelectedKeys={['1']}
+          defaultSelectedKeys={['2']}
           items={[
             {
               key: '1',
@@ -67,10 +69,11 @@ const App = () => {
             borderRadius: borderRadiusLG,
           }}
         >
-          Holabb
+          Hola
         </Content>
       </Layout>
     </Layout>
   );
 };
-export default App;
+
+export default Navegador;

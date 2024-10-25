@@ -1,9 +1,0 @@
-{
-    "conexion":{
-        "server" : "localhost",
-        "user" : "root",
-        "password" : "mysql",
-        "database" : "reportes",
-        "port": "3306"
-    }
-}

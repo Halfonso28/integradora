@@ -1,20 +1,18 @@
 import React, { useState } from 'react';
-import {
-  MenuFoldOutlined,
-  MenuUnfoldOutlined,
-  UploadOutlined,
-  UserOutlined,
-  VideoCameraOutlined,
-} from '@ant-design/icons';
 import { Button, Layout, Menu, theme } from 'antd';
-
-
+import {
+  MenuUnfoldOutlined,
+  MenuFoldOutlined
+} from '@ant-design/icons';
 const { Header, Sider, Content } = Layout;
-const Navegador = () => {
+const Dashboard = (props) => {
   const [collapsed, setCollapsed] = useState(false);
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
+
+  
+
   return (
     <Layout>
       <Sider trigger={null} collapsible collapsed={collapsed}>
@@ -22,24 +20,9 @@ const Navegador = () => {
         <Menu
           theme="dark"
           mode="inline"
-          defaultSelectedKeys={['2']}
-          items={[
-            {
-              key: '1',
-              icon: <UserOutlined />,
-              label: 'nav 1',
-            },
-            {
-              key: '2',
-              icon: <VideoCameraOutlined />,
-              label: 'nav 2',
-            },
-            {
-              key: '3',
-              icon: <UploadOutlined />,
-              label: 'nav 3',
-            },
-          ]}
+          defaultSelectedKeys={[props.selectKey]}
+          items={props.items}
+          onSelect={props.onMenuSelect} 
         />
       </Sider>
       <Layout>
@@ -69,11 +52,10 @@ const Navegador = () => {
             borderRadius: borderRadiusLG,
           }}
         >
-          Hola
+          {props.contenido}
         </Content>
       </Layout>
     </Layout>
   );
 };
-
-export default Navegador;
+export default Dashboard;

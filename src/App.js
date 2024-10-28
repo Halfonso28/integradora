@@ -20,7 +20,7 @@ const App = () => {
   const { data, status, error } = useAxios(["http://localhost/integradora/src/api/usuario.php"], {
     params: {
       accion: "obtenerUsuarioPorId",
-      id: 2
+      id: 1
     }
   }, "get");
 
@@ -258,7 +258,7 @@ const App = () => {
                 ))} */}
                 <p>Usuario encontrado con éxito</p>
                 <p>ID: {data.id}</p>
-                <p>Nombre: {data.contraseña}</p>
+                <p>Nombre: {data.nombre}</p>
                 {/* Muestra más datos del usuario según sea necesario */}
               </div>
             )}

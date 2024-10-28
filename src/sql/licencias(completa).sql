@@ -158,7 +158,7 @@ CREATE TABLE `ticket` (
 CREATE TABLE `usuario` (
   `id` int(11) NOT NULL,
   `usuario` varchar(100) NOT NULL,
-  `contraseña` varchar(100) NOT NULL,
+  `contraseña` varchar(255) NOT NULL,/*cambio de longitud del campo contraseña*/
   `correo` varchar(100) NOT NULL,
   `estado` tinyint(1) DEFAULT 0,
   `nombre` varchar(100) DEFAULT NULL,

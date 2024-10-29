@@ -341,56 +341,85 @@ COMMIT;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 
 -- Procedimientos
+
+
+/*Procedimientos Generales*/
+/*El nombre de los Procedimientos Generales va en Ingles*/
+
 DELIMITER $$
 
-CREATE PROCEDURE insertarLicencia(
-    IN p_codigo CHAR(19),
-    IN p_nombre VARCHAR(256),
-    IN p_genero ENUM('Acción','Aventura','Plataformas','RPG','Estrategia','Simulación','Deportes','Carreras','Lucha','Shooter','Survival Horror','Puzle','Musical','MMORPG','Sandbox','Battle Royale','Metroidvania','Hack and Slash','Terror','Roguelike','MOBA','Party','Idle'),
-    IN p_plataforma ENUM('PC','Xbox','PlayStation'),
-    IN p_clasificacion ENUM('3+','6+','10+','13+','17+','18+'),
-    IN p_precio DECIMAL(10,2)
+CREATE PROCEDURE obtenerPorId(
+    IN tabla VARCHAR(255), 
+    IN id INT
 )
 BEGIN
-    INSERT INTO licencias (codigo, nombre, genero, plataforma, clasificacion, precio)
-    VALUES (p_codigo, p_nombre, p_genero, p_plataforma, p_clasificacion, p_precio);
+    SET @sql = CONCAT('SELECT * FROM ', tabla, ' WHERE id = ?');
+    PREPARE stmt FROM @sql;
+    SET @id = id;
+    EXECUTE stmt USING @id;
+    DEALLOCATE PREPARE stmt;
 END $$
 
 DELIMITER ;
 
 DELIMITER $$
 
-CREATE PROCEDURE modificarLicencia(
-    IN p_id INT,
-    IN p_codigo CHAR(19),
-    IN p_nombre VARCHAR(256),
-    IN p_genero ENUM('Acción','Aventura','Plataformas','RPG','Estrategia','Simulación','Deportes','Carreras','Lucha','Shooter','Survival Horror','Puzle','Musical','MMORPG','Sandbox','Battle Royale','Metroidvania','Hack and Slash','Terror','Roguelike','MOBA','Party','Idle'),
-    IN p_plataforma ENUM('PC','Xbox','PlayStation'),
-    IN p_clasificacion ENUM('3+','6+','10+','13+','17+','18+'),
-    IN p_precio DECIMAL(10,2)
+CREATE PROCEDURE getAll(
+    IN tabla VARCHAR(255)
 )
 BEGIN
-    UPDATE licencias
-    SET codigo = p_codigo, 
-        nombre = p_nombre, 
-        genero = p_genero, 
-        plataforma = p_plataforma, 
-        clasificacion = p_clasificacion, 
-        precio = p_precio
-    WHERE id = p_id;
+    SET @sql = CONCAT('SELECT * FROM ', tabla);
+    PREPARE stmt FROM @sql;
+    EXECUTE stmt;
+    DEALLOCATE PREPARE stmt;
 END $$
 
 DELIMITER ;
 
 DELIMITER $$
 
-CREATE PROCEDURE eliminarLicencia(
-    IN p_id INT
+CREATE PROCEDURE deleteById(
+    IN tabla VARCHAR(255), 
+    IN id INT
 )
 BEGIN
-    DELETE FROM licencias
-    WHERE id = p_id;
+    SET @sql = CONCAT('DELETE FROM ', tabla, ' WHERE id = ?');
+    PREPARE stmt FROM @sql;
+    SET @id = id;
+    EXECUTE stmt USING @id;
+    DEALLOCATE PREPARE stmt;
 END $$
 
 DELIMITER ;
 
+DELIMITER $$
+
+CREATE PROCEDURE register(
+    IN tabla VARCHAR(255), 
+    IN campos VARCHAR(255), -- lista de campos en formato 'campo1, campo2, campo3'
+    IN valores VARCHAR(255) -- lista de valores en formato "'valor1', 'valor2', 'valor3'"
+)
+BEGIN
+    SET @sql = CONCAT('INSERT INTO ', tabla, ' (', campos, ') VALUES (', valores, ')');
+    PREPARE stmt FROM @sql;
+    EXECUTE stmt;
+    DEALLOCATE PREPARE stmt;
+END $$
+
+DELIMITER ;
+
+DELIMITER $$
+
+CREATE PROCEDURE updateData(
+    IN tabla VARCHAR(255), 
+    IN camposValores VARCHAR(255), -- lista de campos y valores en formato 'campo1=valor1, campo2=valor2'
+    IN id INT(11) -- condición para la cláusula WHERE
+)
+BEGIN
+    SET @sql = CONCAT('UPDATE ', tabla, ' SET ', camposValores, ' WHERE id = ', id);
+    PREPARE stmt FROM @sql;
+    EXECUTE stmt;
+    DEALLOCATE PREPARE stmt;
+END $$
+
+DELIMITER ;

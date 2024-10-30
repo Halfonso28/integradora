@@ -14,14 +14,20 @@ class DatabaseModel
      * Obtiene todos los datos registrados en una tabla.
      * NOTA: Necesita usar un modelo extendido de DatabaseModel para indicar la tabla a la que se le realizara la consulta.
      * 
+     * @param int $page Numero de Pagina a buscar.
+     * @param int $perPage Limite de registros por pagina.
+     * @param string $condicion Condicion de seleccion de datos
+     * 
      * @return array Retorna un array asociativo con los registros encontrados.
      */
-    public static function getAll()
+    public static function getAll($page=1, $perPage=10,$condicion=null)
     {
+        $offset = ($page - 1) * $perPage;
         $tabla = static::$tabla;
-        $query = "CALL getAll('$tabla')";
+        $query = "CALL getAll('$tabla',$perPage,$offset,$condicion)";
         return self::execute($query, "GET");
     }
+
 
     /**
      * Obtiene los datos del un registro por id.

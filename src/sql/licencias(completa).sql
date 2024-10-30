@@ -130,7 +130,7 @@ CREATE TABLE `soporte` (
   `curp` char(18) NOT NULL,
   `rfc` varchar(13) NOT NULL,
   `numeroSeguroSocial` char(11) NOT NULL,
-  `ine` longblob NOT NULL
+  `urlIne` varchar(255) DEFAULT "Sin INE"
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish_ci;
 
 -- --------------------------------------------------------
@@ -366,16 +366,30 @@ DELIMITER ;
 DELIMITER $$
 
 CREATE PROCEDURE getAll(
-    IN tabla VARCHAR(255)
+    IN tabla VARCHAR(255),
+    IN perPage INT,
+    IN afterTo INT,
+    IN condicion VARCHAR(255)
 )
 BEGIN
     SET @sql = CONCAT('SELECT * FROM ', tabla);
+
+    IF condicion IS NOT NULL AND condicion != '' THEN
+        SET @sql = CONCAT(@sql, ' WHERE ', condicion);
+    END IF;
+
+    SET @sql = CONCAT(@sql, ' LIMIT ', perPage, ' OFFSET ', afterTo);
+
     PREPARE stmt FROM @sql;
     EXECUTE stmt;
     DEALLOCATE PREPARE stmt;
 END $$
 
 DELIMITER ;
+
+
+
+
 
 DELIMITER $$
 

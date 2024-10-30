@@ -11,21 +11,32 @@ use App\Models\CamposModel;
 class UsuarioController
 {
 
-    function getById($request, $response, $args)
+    function getById(Request $request, Response $response, $args)
     {
-        $usuario = UsuarioModel::getById($args["id"]);
-        if ($usuario == null) {
-            $response->getBody()->write("No se encontro al usuario con id: " . $args["id"]);
-            return $response->withStatus(404);
+        $id = $args["id"];
+        if (is_numeric($id)) {
+            $usuario = UsuarioModel::getById($id);
+            if ($usuario == []) {
+                $response->getBody()->write("No se encontro al usuario con id: " . $id);
+                return $response->withStatus(404);
+            } else {
+                $response->getBody()->write(json_encode($usuario));
+                return $response->withStatus(200);
+            }
         } else {
-            $response->getBody()->write(json_encode($usuario));
-            return $response->withStatus(200);
+            $response->getBody()->write("El Id debe ser un numero");
+            return $response->withStatus(400);
         }
     }
 
-    function getAll($request, $response, $args)
+    function getAll(Request $request, Response $response, $args)
     {
-        $usuarios = UsuarioModel::getAll();
+        if (isset($args["page"])) {
+            $page = $args["page"];
+            $usuarios = UsuarioModel::getAll($page);
+        } else {
+            $usuarios = UsuarioModel::getAll();
+        }
         $response->getBody()->write(json_encode($usuarios));
         return $response->withStatus(200);
     }

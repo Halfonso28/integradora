@@ -12,6 +12,10 @@ class UsuarioModel extends DatabaseModel
      * Actualiza un registro por Id.
      * NOTA: Solo se actualizaran los campos: nombre, apellidoPaterno, apellidoMaterno, fechaNacimiento, telefono.
      * 
+     * Requiere que los parametros tengan el formato: "valor"
+     * 
+     * Ejemplo de asignacion: $valor = '"'.$valor .'"';
+     * 
      * @param string $nombre Nombre nuevo.
      * @param string $apellidoPaterno Apellido paterno nuevo.
      * @param string $apellidoMaterno Apellido materno nuevo.
@@ -24,10 +28,8 @@ class UsuarioModel extends DatabaseModel
     public static function update($nombre="", $apellidoPaterno="", $apellidoMaterno="", $fechaNacimiento="", $telefono="", $id = 0)
     {
         $tabla = static::$tabla;
-        $camposValores="nombre='$nombre',apellidoPaterno='$apellidoPaterno',apellidoMaterno='$apellidoMaterno',fechaNacimiento='$fechaNacimiento',telefono='$telefono'";
-        $query = "CALL updateData('$tabla','$camposValores','$id')";
-        echo $query;
-        die();
+        $camposValores="nombre=$nombre,apellidoPaterno=$apellidoPaterno,apellidoMaterno=$apellidoMaterno,fechaNacimiento=$fechaNacimiento,telefono=$telefono";
+        $query = "CALL updateData('$tabla','$camposValores',$id)";
         return self::execute($query, "SET");
     }
 }

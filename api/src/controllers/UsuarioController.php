@@ -3,7 +3,7 @@
 namespace App\Controllers;
 
 use Psr\Http\Message\ResponseInterface as Response;
-use Psr\Http\Message\ServerRequestFactoryInterface as Request;
+use Psr\Http\Message\ServerRequestInterface as Request;
 use App\Models\UsuarioModel;
 use App\Models\CamposModel;
 
@@ -67,6 +67,36 @@ class UsuarioController
         }
     }
 
+    /**
+     * Actualización de Datos.
+     * Solo se actualizaran los campos: nombre, apellidoPaterno, apellidoMaterno, fechaNacimiento, telefono.
+     * 
+     * NOTA: Requiere un array(JSON) como entrada de datos.
+     * @param mixed $request
+     * @param mixed $response Respuesta a la peticion HTTP
+     * @param array $args Parametros obtenidos por GET $args['param']
+     * 
+     * @return boolean 
+     */
+    function update(Request $request, Response $response, array $args)
+    {
+        $body = $request->getBody()->getContents();
+        $respuestas = json_decode($body, true);
+        $nombre = '"' . $respuestas["nombre"] . '"';
+        $apellidoPaterno = '"' . $respuestas["apellidoPaterno"] . '"';
+        $apellidoMaterno = '"' . $respuestas["apellidoMaterno"] . '"';
+        $fechaNacimiento = '"' . $respuestas["fechaNacimiento"] . '"';
+        $telefono = '"' . $respuestas["fechaNacimiento"] . '"';
+
+        if (UsuarioModel::update($nombre, $apellidoPaterno, $apellidoMaterno, $fechaNacimiento, $telefono, $args["id"])) {
+            $response->getBody()->write("Usuario actualizado con Exito");
+            return $response->withStatus(200);
+        } else {
+            $response->getBody()->write("Fallo al actualizar el usuario con id: " . $args["id"]);
+            return $response->withStatus(400);
+        }
+    }
+
     function deleteById($request, $response, $args)
     {
         if (UsuarioModel::deleteById($args["id"])) {
@@ -79,35 +109,7 @@ class UsuarioController
     }
 
 
-    /**
-     * Actualización de Datos.
-     * Solo se actualizaran los campos: nombre, apellidoPaterno, apellidoMaterno, fechaNacimiento, telefono.
-     * 
-     * @param mixed $request
-     * @param mixed $response Respuesta a la peticion HTTP
-     * @param array $args Parametros obtenidos por GET $args['param']
-     * 
-     * @return boolean 
-     */
-    function update($request, $response, $args)
-    {
-        $respuestas = (array)$request->getParsedBody();
-        var_dump($respuestas);
-        die();
-        $nombre = $respuestas["nombre"];
-        $apellidoPaterno = $respuestas["apellidoPaterno"];
-        $apellidoMaterno = $respuestas["apellidoMaterno"];
-        $fechaNacimiento = $respuestas["fechaNacimiento"];
-        $telefono = $respuestas["fechaNacimiento"];
 
-        if(UsuarioModel::update($nombre, $apellidoPaterno, $apellidoMaterno, $fechaNacimiento, $telefono, $args["id"])){
-            $response->getBody()->write("Usuario actualizado con Exito");
-            return $response->withStatus(200);
-        }else{
-            $response->getBody()->write("Fallo al actualizar el usuario con id: ".$args["id"]);
-            return $response->withStatus(400);
-        }
-    }
     // Get all POST parameters
     // $params = (array)$request->getParsedBody();
 

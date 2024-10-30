@@ -74,7 +74,8 @@ CREATE TABLE `licencias` (
   `genero` enum('Acción','Aventura','Plataformas','RPG','Estrategia','Simulación','Deportes','Carreras','Lucha','Shooter','Survival Horror','Puzle','Musical','MMORPG','Sandbox','Battle Royale','Metroidvania','Hack and Slash','Terror','Roguelike','MOBA','Party','Idle') NOT NULL,
   `plataforma` enum('PC','Xbox','PlayStation') NOT NULL,
   `clasificacion` enum('3+','6+','10+','13+','17+','18+') NOT NULL,
-  `precio` decimal(10,2) NOT NULL
+  `precio` decimal(10,2) NOT NULL,
+  `urlImagen` varchar(255) DEFAULT "Sin Imagen" 
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish_ci;
 
 -- --------------------------------------------------------
@@ -348,7 +349,7 @@ COMMIT;
 
 DELIMITER $$
 
-CREATE PROCEDURE obtenerPorId(
+CREATE PROCEDURE getById(
     IN tabla VARCHAR(255), 
     IN id INT
 )

@@ -82,7 +82,7 @@ class DatabaseModel
      * Actualiza un registro por Id.
      * NOTA: Necesita usar un modelo extendido de DatabaseModel para indicar la tabla a la que se le realizara la consulta.
      * 
-     * @param string $camposValores lista de campos y valores en formato 'campo1=valor1, campo2=valor2'
+     * @param string $camposValores lista de campos y valores en formato 'campo1="nuevoValor1", campo2="nuevoValor2"'
      * @param int $id Id del registro a actualizar.
      * 
      * @return boolean

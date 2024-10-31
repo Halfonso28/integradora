@@ -42,15 +42,26 @@ class SoporteController
         if (isset($args["page"])) {
             $page = $args["page"];
             $soportes = SoporteModel::getAll($page);
+            if ($soportes != []) {
+                $response->getBody()->write(json_encode($soportes));
+                return $response->withStatus(200);
+            } else {
+                $response->getBody()->write("No se encontraron soportes registrados en la pagina: " . $args["page"]);
+                return $response->withStatus(404);
+            }
         } else {
             $soportes = SoporteModel::getAll();
+            if ($soportes != []) {
+                $response->getBody()->write(json_encode($soportes));
+                return $response->withStatus(200);
+            } else {
+                $response->getBody()->write("No se encontraron soportes registrados");
+                return $response->withStatus(404);
+            }
         }
-        $response->getBody()->write(json_encode($soportes));
-        return $response->withStatus(200);
     }
 
-    // Campos: usuario,contraseña,correo,estado,nombre,apellidoPaterno,apellidoMaterno,fechaNacimiento,telefono,rol
-    function add($request, $response, $args)
+    function add(Request $request, Response $response, $args)
     {
         $respuestas = (array)$request->getParsedBody();
         $respuestas["contraseña"] = password_hash($respuestas["contraseña"], PASSWORD_BCRYPT);

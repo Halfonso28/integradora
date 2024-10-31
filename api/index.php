@@ -19,21 +19,21 @@ $app = AppFactory::create();
 
 // USUARIO
 $app->group('/usuario', function (RouteCollectorProxy $group) {
-    $group->get("/getById/{id}", UsuarioController::class . ":getById");
-    $group->get("/getAll/{page}", UsuarioController::class . ":getAll");
-    $group->get("/getAll", UsuarioController::class . ":getAll");
-    $group->post("/add", UsuarioController::class . ":add");
-    $group->delete("/delete/{id}", UsuarioController::class . ":deleteById");
-    $group->put("update/{id}", UsuarioController::class . ":update");
+    $group->get("/getById/{id}", UsuarioController::class . ":getById");//Listo
+    $group->get("/getAll/{page}", UsuarioController::class . ":getAll");//Listo
+    $group->get("/getAll", UsuarioController::class . ":getAll");//Listo
+    $group->post("/add", UsuarioController::class . ":add");//Listo
+    $group->delete("/delete/{id}", UsuarioController::class . ":deleteById");//Listo
+    $group->put("update/{id}", UsuarioController::class . ":update");//Listo
 });
 //Soporte
 $app->group('/soporte', function (RouteCollectorProxy $group) {
-    $group->get("/getById/{id}", SoporteController::class . ":getById");
-    $group->get("/getAll/{page}", SoporteController::class . ":getAll");
-    $group->get("/getAll", SoporteController::class . ":getAll");
-    $group->post("/add", SoporteController::class . ":add");
-    $group->delete("/delete/{id}", SoporteController::class . ":deleteById");
-    $group->put("update/{id}", SoporteController::class . ":update");
+    $group->get("/getById/{id}", SoporteController::class . ":getById");//Listo
+    $group->get("/getAll/{page}", SoporteController::class . ":getAll");//Listo
+    $group->get("/getAll", SoporteController::class . ":getAll");//Listo
+    $group->post("/add", SoporteController::class . ":add");//❌
+    $group->delete("/delete/{id}", SoporteController::class . ":deleteById");//❌
+    $group->put("update/{id}", SoporteController::class . ":update");//❌
 });
 
 $app->run();

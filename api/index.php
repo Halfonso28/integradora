@@ -24,16 +24,27 @@ $app->group('/usuario', function (RouteCollectorProxy $group) {
     $group->get("/getAll", UsuarioController::class . ":getAll");//Listo
     $group->post("/add", UsuarioController::class . ":add");//Listo
     $group->delete("/delete/{id}", UsuarioController::class . ":deleteById");//Listo
-    $group->put("update/{id}", UsuarioController::class . ":update");//Listo
+    $group->put("/update/{id}", UsuarioController::class . ":update");//Listo
 });
-//Soporte
+// Soporte
 $app->group('/soporte', function (RouteCollectorProxy $group) {
     $group->get("/getById/{id}", SoporteController::class . ":getById");//Listo
     $group->get("/getAll/{page}", SoporteController::class . ":getAll");//Listo
     $group->get("/getAll", SoporteController::class . ":getAll");//Listo
-    $group->post("/add", SoporteController::class . ":add");//❌
+    $group->post("/add", SoporteController::class . ":add");//Listo
+    $group->post("/upgradeUser/{id}", SoporteController::class . ":upgradeUser");//Listo
+    $group->delete("/delete/{id}", SoporteController::class . ":deleteById");//Listo
+    $group->put("/update/{id}", SoporteController::class . ":update");//Listo
+});
+
+// Licencia
+$app->group('/licencia', function (RouteCollectorProxy $group) {
+    $group->get("/getById/{id}", SoporteController::class . ":getById");//Listo
+    $group->get("/getAll/{page}", SoporteController::class . ":getAll");//Listo
+    $group->get("/getAll", SoporteController::class . ":getAll");//Listo
+    $group->post("/add", SoporteController::class . ":add");//Listo
     $group->delete("/delete/{id}", SoporteController::class . ":deleteById");//❌
-    $group->put("update/{id}", SoporteController::class . ":update");//❌
+    $group->put("/update/{id}", SoporteController::class . ":update");//❌
 });
 
 $app->run();

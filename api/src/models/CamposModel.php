@@ -7,18 +7,48 @@ namespace App\Models;
  */
 class CamposModel
 {
-    public static $campos = array(
-        "usuario" => array(
-            'usuario',
-            'contraseña',
-            'correo',
-            'estado',
-            'nombre',
-            'apellidoPaterno',
-            'apellidoMaterno',
-            'fechaNacimiento',
-            'telefono',
-            'rol'
-        )
-    );
+    public const USUARIO = [
+        'usuario',
+        'contraseña',
+        'correo',
+        'nombre',
+        'apellidoPaterno',
+        'apellidoMaterno',
+        'fechaNacimiento',
+        'telefono',
+        'rol'
+    ];
+
+    public const SOPORTE = [
+        'idUsuario',
+        'curp',
+        'rfc',
+        'nss',
+        'urlIne'
+    ];
+
+    public const LICENCIA = [
+        'codigo',
+        'nombre',
+        'genero',
+        'plataforma',
+        'clasificacion',
+        'precio',
+        'urlImagen'
+    ];
+
+    public static function obtenerCamposUsuario(): string
+    {
+        return '"' . implode(', ', self::USUARIO) . '"';
+    }
+
+    public static function obtenerCamposSoporte(): string
+    {
+        return '"' . implode(', ', self::SOPORTE) . '"';
+    }
+
+    public static function obtenerCamposLicencia(): string
+    {
+        return '"' . implode(', ', self::LICENCIA) . '"';
+    }
 }

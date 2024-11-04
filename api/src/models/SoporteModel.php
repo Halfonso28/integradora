@@ -26,4 +26,28 @@ class SoporteModel extends DatabaseModel
         $query = "CALL getAll('usuario,soporte',$perPage,$offset,'$condicion')";
         return self::execute($query, "GET");
     }
+
+     /**
+     * Actualiza un registro por Id.
+     * NOTA: Solo se actualizaran los campos: curp, rfc, nss, urlIne
+     * 
+     * Requiere que los parametros tengan el formato: "valor"
+     * 
+     * Ejemplo de asignacion: $valor = '"'.$valor .'"';
+     * 
+     * @param string $curp CURP nuevo.
+     * @param string $rfc RFC nuevo.
+     * @param string $nss NSS nuevo.
+     * @param string $urlIne url de la imagen local del Ine.
+     * @param int $id Id del registro a actualizar.
+     * 
+     * @return boolean
+     */
+    public static function update($curp="", $rfc="", $nss="", $urlIne="", $id = 0)
+    {
+        $tabla = static::$tabla;
+        $camposValores="curp=$curp,rfc=$rfc,nss=$nss,urlIne=$urlIne";
+        $query = "CALL updateData('$tabla','$camposValores',$id)";
+        return self::execute($query, "SET");
+    }
 }

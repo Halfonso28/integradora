@@ -30,7 +30,8 @@ SET time_zone = "+00:00";
 CREATE TABLE `asignaciones` (
   `id` int(11) NOT NULL,
   `idSoporte` int(11) DEFAULT NULL,
-  `idAdmin` int(11) DEFAULT NULL
+  `idAdmin` int(11) DEFAULT NULL,
+  `idJornada` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish_ci;
 
 -- --------------------------------------------------------
@@ -126,10 +127,9 @@ CREATE TABLE `respuestas` (
 CREATE TABLE `soporte` (
   `id` int(11) NOT NULL,
   `idUsuario` int(11) DEFAULT NULL,
-  `idJornada` int(11) DEFAULT NULL,
   `curp` char(18) NOT NULL,
   `rfc` varchar(13) NOT NULL,
-  `numeroSeguroSocial` char(11) NOT NULL,
+  `nss` char(11) NOT NULL,
   `urlIne` varchar(255) DEFAULT "Sin INE"
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish_ci;
 
@@ -161,13 +161,13 @@ CREATE TABLE `usuario` (
   `usuario` varchar(100) NOT NULL,
   `contraseña` varchar(255) NOT NULL,/*cambio de longitud del campo contraseña*/
   `correo` varchar(100) NOT NULL,
-  `estado` tinyint(1) DEFAULT 0,
+  `estado` tinyint(1) DEFAULT 1,
   `nombre` varchar(100) DEFAULT NULL,
   `apellidoPaterno` varchar(100) DEFAULT NULL,
   `apellidoMaterno` varchar(100) DEFAULT NULL,
   `fechaNacimiento` date NOT NULL,
   `telefono` char(10) NOT NULL,
-  `rol` enum('admin','usuario','soporte') DEFAULT NULL
+  `rol` enum('admin','usuario','soporte') DEFAULT "usuario"
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish_ci;
 
 --
@@ -222,7 +222,7 @@ ALTER TABLE `soporte`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `curp` (`curp`),
   ADD UNIQUE KEY `rfc` (`rfc`),
-  ADD UNIQUE KEY `numeroSeguroSocial` (`numeroSeguroSocial`),
+  ADD UNIQUE KEY `nss` (`nss`),
   ADD KEY `idUsuario` (`idUsuario`);
 
 --
@@ -307,6 +307,7 @@ ALTER TABLE `usuario`
 ALTER TABLE `asignaciones`
   ADD CONSTRAINT `asignaciones_ibfk_1` FOREIGN KEY (`idSoporte`) REFERENCES `soporte` (`id`),
   ADD CONSTRAINT `asignaciones_ibfk_2` FOREIGN KEY (`idAdmin`) REFERENCES `usuario` (`id`);
+  ADD CONSTRAINT `asignaciones_ibfk_4` FOREIGN KEY (`idJornada`) REFERENCES `jornada` (`id`);
 
 --
 -- Filtros para la tabla `compra`
@@ -326,8 +327,6 @@ ALTER TABLE `respuestas`
 --
 ALTER TABLE `soporte`
   ADD CONSTRAINT `soporte_ibfk_1` FOREIGN KEY (`idUsuario`) REFERENCES `usuario` (`id`),
-  ADD CONSTRAINT `soporte_ibfk_2` FOREIGN KEY (`idJornada`) REFERENCES `jornada` (`id`);
-
 --
 -- Filtros para la tabla `ticket`
 --
@@ -348,7 +347,6 @@ COMMIT;
 /*El nombre de los Procedimientos Generales va en Ingles*/
 
 DELIMITER $$
-
 CREATE PROCEDURE getById(
     IN tabla VARCHAR(255), 
     IN id INT
@@ -360,11 +358,9 @@ BEGIN
     EXECUTE stmt USING @id;
     DEALLOCATE PREPARE stmt;
 END $$
-
 DELIMITER ;
 
 DELIMITER $$
-
 CREATE PROCEDURE getAll(
     IN tabla VARCHAR(255),
     IN perPage INT,
@@ -373,26 +369,17 @@ CREATE PROCEDURE getAll(
 )
 BEGIN
     SET @sql = CONCAT('SELECT * FROM ', tabla);
-
     IF condicion IS NOT NULL AND condicion != '' THEN
         SET @sql = CONCAT(@sql, ' WHERE ', condicion);
     END IF;
-
     SET @sql = CONCAT(@sql, ' LIMIT ', perPage, ' OFFSET ', afterTo);
-
     PREPARE stmt FROM @sql;
     EXECUTE stmt;
     DEALLOCATE PREPARE stmt;
 END $$
-
 DELIMITER ;
 
-
-
-
-
 DELIMITER $$
-
 CREATE PROCEDURE deleteById(
     IN tabla VARCHAR(255), 
     IN id INT
@@ -404,11 +391,9 @@ BEGIN
     EXECUTE stmt USING @id;
     DEALLOCATE PREPARE stmt;
 END $$
-
 DELIMITER ;
 
 DELIMITER $$
-
 CREATE PROCEDURE register(
     IN tabla VARCHAR(255), 
     IN campos VARCHAR(255), -- lista de campos en formato 'campo1, campo2, campo3'
@@ -420,11 +405,9 @@ BEGIN
     EXECUTE stmt;
     DEALLOCATE PREPARE stmt;
 END $$
-
 DELIMITER ;
-
+/*updateData*/
 DELIMITER $$
-
 CREATE PROCEDURE updateData(
     IN tabla VARCHAR(255), 
     IN camposValores VARCHAR(255), -- lista de campos y valores en formato 'campo1=valor1, campo2=valor2'
@@ -436,5 +419,18 @@ BEGIN
     EXECUTE stmt;
     DEALLOCATE PREPARE stmt;
 END $$
-
+DELIMITER ;
+/*upgradeUser*/
+DELIMITER $$
+CREATE PROCEDURE upgradeUser(
+    IN tabla VARCHAR(100),
+    IN id INT,
+    IN rol VARCHAR(100)
+)
+BEGIN
+    SET @sql = CONCAT('UPDATE ', tabla, ' SET rol = "', rol, '" WHERE id = ', id);
+    PREPARE stmt FROM @sql;
+    EXECUTE stmt;
+    DEALLOCATE PREPARE stmt;
+END $$
 DELIMITER ;

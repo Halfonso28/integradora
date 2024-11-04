@@ -41,35 +41,24 @@ class UsuarioController
         return $response->withStatus(200);
     }
 
-    // Campos: usuario,contraseña,correo,estado,nombre,apellidoPaterno,apellidoMaterno,fechaNacimiento,telefono,rol
-    function add($request, $response, $args)
+    function add(Request $request,Response $response, $args)
     {
         $respuestas = (array)$request->getParsedBody();
-        $respuestas["contraseña"] = password_hash($respuestas["contraseña"], PASSWORD_BCRYPT);
-        // password_verify():
-        // password_verify($pass, $passHash)
+        $valoresUsuario = [
+            'usuario' => $respuestas['usuario'],
+            'contraseña' => password_hash($respuestas['contraseña'], PASSWORD_BCRYPT),
+            'correo' => $respuestas['correo'],
+            'nombre' => $respuestas['nombre'],
+            'apellidoPaterno' => $respuestas['apellidoPaterno'],
+            'apellidoMaterno' => $respuestas['apellidoMaterno'],
+            'fechaNacimiento' => $respuestas['fechaNacimiento'],
+            'telefono' => $respuestas['telefono'],
+            'rol'=>'usuario'
+        ];
+        $usuarioFormateado = '"' . implode(', ', array_map(fn($valor) => "'$valor'", $valoresUsuario)) . '"';
+        $camposUsuario = CamposModel::obtenerCamposUsuario();
 
-        $valores = '';
-        foreach ($respuestas as $respuesta) {
-            if ($valores == '') {
-                $valores = '"' . "'$respuesta'";
-            } else {
-                $valores .= ", '$respuesta'";
-            }
-        }
-        $valores = $valores . '"';
-
-
-        $campos = '"';
-        foreach (CamposModel::$campos["usuario"] as $campo) {
-            if ($campos == '"') {
-                $campos = $campo;
-            } else {
-                $campos .= ", $campo";
-            }
-        }
-
-        if (UsuarioModel::add($campos, $valores)) {
+        if (UsuarioModel::add($camposUsuario, $usuarioFormateado)) {
             $response->getBody()->write("Usuario añadido con Exito");
             return $response->withStatus(201);
         } else {

@@ -20,7 +20,7 @@ class DatabaseModel
      * 
      * @return array Retorna un array asociativo con los registros encontrados.
      */
-    public static function getAll($page=1, $perPage=10,$condicion=null)
+    public static function getAll($page = 1, $perPage = 10, $condicion = '""')
     {
         $offset = ($page - 1) * $perPage;
         $tabla = static::$tabla;
@@ -61,7 +61,7 @@ class DatabaseModel
     public static function add($campos = "", $valores = "")
     {
         $tabla = static::$tabla;
-        $query = "CALL register('$tabla', '$campos', $valores)";
+        $query = "CALL register('$tabla', $campos, $valores)";
         if (self::execute($query, "SET")) {
             return true;
         } else {
@@ -100,6 +100,20 @@ class DatabaseModel
         return self::execute($query, "SET");
     }
 
+    public static function getLastId()
+    {
+        $tabla = static::$tabla;
+        $query = "SELECT MAX(id) AS ultimoId FROM $tabla";
+        return self::execute($query, "LASTID");
+    }
+
+    public static function upgradeUser($usuarioId = 0, $rol = 'usuario')
+    {
+        $tabla = static::$tabla;
+        $query = "Call upgradeUser('$tabla',$usuarioId,'$rol')";
+        return self::execute($query,"SET");
+    }
+
     /**
      * Ejecuta las consultas a la base de datos.
      * NOTA: Necesita usar un modelo extendido de DatabaseModel para indicar la tabla a la que se le realizara la consulta.
@@ -107,7 +121,7 @@ class DatabaseModel
      * @param string $query Consulta a base de datos en formato MySql.
      * @param string $type Tipo de consulta a realizar ("GET": SELECT, "SET": UPDATE, DELETE, INSERT).
      * 
-     * @return [type] Retorna un array asociativo para las consultas GET y un boolean para las consultas SET.
+     * @return [type] Retorna un array asociativo para las consultas GET, un boolean para las consultas SET y un number para las consultas LASTID.
      */
     protected static function execute($query = "", $type = null)
     {
@@ -122,6 +136,8 @@ class DatabaseModel
                     return $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
                 } elseif ($type == "SET") {
                     return $resultado;
+                } elseif ($type == "LASTID") {
+                    return $stmt->fetchColumn();
                 }
             }
         } catch (PDOException $e) {

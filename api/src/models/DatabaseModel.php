@@ -96,7 +96,7 @@ class DatabaseModel
     public static function update($camposValores = "", $id = 0)
     {
         $tabla = static::$tabla;
-        $query = "CALL updateData('$tabla','$camposValores','$id')";
+        $query = "CALL updateData('$tabla','$camposValores',$id)";
         return self::execute($query, "SET");
     }
 

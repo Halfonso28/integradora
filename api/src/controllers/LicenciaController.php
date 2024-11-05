@@ -41,7 +41,7 @@ class LicenciaController
         return $response->withStatus(200);
     }
 
-    function add(Request $request,Response $response, $args)
+    function add(Request $request, Response $response, $args)
     {
         $respuestas = (array)$request->getParsedBody();
         $valoresLicencia = [
@@ -63,42 +63,35 @@ class LicenciaController
         }
     }
 
-    // function update(Request $request, Response $response, array $args)
-    // {
-    //     $body = $request->getBody()->getContents();
-    //     $respuestas = json_decode($body, true);
-    //     $nombre = '"' . $respuestas["nombre"] . '"';
-    //     $genero = '"' . $respuestas["genero"] . '"';
-    //     $plataforma = '"' . $respuestas["plataforma"] . '"';
-    //     $clasificacion = '"' . $respuestas["clasificacion"] . '"';
-    //     $precio = '"' . $respuestas["precio"] . '"';
+    function update(Request $request, Response $response, array $args)
+    {
+        $body = $request->getBody()->getContents();
+        $respuestas = json_decode($body, true);
 
-    //     if (LicenciaModel::update($nombre, $apellidoPaterno, $apellidoMaterno, $fechaNacimiento, $telefono, $args["id"])) {
-    //         $response->getBody()->write("Usuario actualizado con Exito");
-    //         return $response->withStatus(200);
-    //     } else {
-    //         $response->getBody()->write("Fallo al actualizar el usuario con id: " . $args["id"]);
-    //         return $response->withStatus(400);
-    //     }
-    // }
+        $campos = ['genero', 'plataforma', 'clasificacion', 'precio', 'urlImagen'];
+        foreach ($campos as $campo) {
+            $$campo = '"' . ($respuestas[$campo] ?? '') . '"';
+        }
 
-    // function deleteById($request, $response, $args)
-    // {
-    //     if (LicenciaModel::deleteById($args["id"])) {
-    //         $response->getBody()->write("Usuario eliminado con Exito");
-    //         return $response->withStatus(200);
-    //     } else {
-    //         $response->getBody()->write("Fallo al eliminar usuario");
-    //         return $response->withStatus(400);
-    //     }
-    // }
+        if (LicenciaModel::update($genero, $plataforma, $clasificacion, $precio, $urlImagen, $args["id"])) {
+            $response->getBody()->write("Registro actualizado con éxito");
+            return $response->withStatus(200);
+        } else {
+            $response->getBody()->write("Fallo al actualizar el registro con id: " . $args["id"]);
+            return $response->withStatus(400);
+        }
+    }
 
 
-
-    // Get all POST parameters
-    // $params = (array)$request->getParsedBody();
-
-    // Get a single POST parameter
-    // $foo = $params['foo'];
+    function deleteById(Request $request, Response $response, $args)
+    {
+        if (LicenciaModel::deleteById($args["id"])) {
+            $response->getBody()->write("Licencia eliminado con Exito");
+            return $response->withStatus(200);
+        } else {
+            $response->getBody()->write("Fallo la licencia con id: " . $args["id"]);
+            return $response->withStatus(400);
+        }
+    }
 
 }

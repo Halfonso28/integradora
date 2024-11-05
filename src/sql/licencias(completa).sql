@@ -1,3 +1,10 @@
+DROP DATABASE IF EXISTS licencias;
+
+-- Crear la base de datos
+CREATE DATABASE licencias;
+
+-- Usar la base de datos creada
+USE licencias;
 -- phpMyAdmin SQL Dump
 -- version 5.2.1
 -- https://www.phpmyadmin.net/
@@ -306,7 +313,7 @@ ALTER TABLE `usuario`
 --
 ALTER TABLE `asignaciones`
   ADD CONSTRAINT `asignaciones_ibfk_1` FOREIGN KEY (`idSoporte`) REFERENCES `soporte` (`id`),
-  ADD CONSTRAINT `asignaciones_ibfk_2` FOREIGN KEY (`idAdmin`) REFERENCES `usuario` (`id`);
+  ADD CONSTRAINT `asignaciones_ibfk_2` FOREIGN KEY (`idAdmin`) REFERENCES `usuario` (`id`),
   ADD CONSTRAINT `asignaciones_ibfk_4` FOREIGN KEY (`idJornada`) REFERENCES `jornada` (`id`);
 
 --
@@ -326,7 +333,7 @@ ALTER TABLE `respuestas`
 -- Filtros para la tabla `soporte`
 --
 ALTER TABLE `soporte`
-  ADD CONSTRAINT `soporte_ibfk_1` FOREIGN KEY (`idUsuario`) REFERENCES `usuario` (`id`),
+  ADD CONSTRAINT `soporte_ibfk_1` FOREIGN KEY (`idUsuario`) REFERENCES `usuario` (`id`);
 --
 -- Filtros para la tabla `ticket`
 --
@@ -346,6 +353,7 @@ COMMIT;
 /*Procedimientos Generales*/
 /*El nombre de los Procedimientos Generales va en Ingles*/
 
+/*getById*/
 DELIMITER $$
 CREATE PROCEDURE getById(
     IN tabla VARCHAR(255), 
@@ -360,6 +368,7 @@ BEGIN
 END $$
 DELIMITER ;
 
+/*getAll*/
 DELIMITER $$
 CREATE PROCEDURE getAll(
     IN tabla VARCHAR(255),
@@ -379,6 +388,7 @@ BEGIN
 END $$
 DELIMITER ;
 
+/*deleteById*/
 DELIMITER $$
 CREATE PROCEDURE deleteById(
     IN tabla VARCHAR(255), 
@@ -393,6 +403,7 @@ BEGIN
 END $$
 DELIMITER ;
 
+/*register*/
 DELIMITER $$
 CREATE PROCEDURE register(
     IN tabla VARCHAR(255), 
@@ -406,6 +417,7 @@ BEGIN
     DEALLOCATE PREPARE stmt;
 END $$
 DELIMITER ;
+
 /*updateData*/
 DELIMITER $$
 CREATE PROCEDURE updateData(
@@ -420,6 +432,7 @@ BEGIN
     DEALLOCATE PREPARE stmt;
 END $$
 DELIMITER ;
+
 /*upgradeUser*/
 DELIMITER $$
 CREATE PROCEDURE upgradeUser(

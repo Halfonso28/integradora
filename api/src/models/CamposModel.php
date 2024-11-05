@@ -37,6 +37,11 @@ class CamposModel
         'urlImagen'
     ];
 
+    public const TICKET = [
+        'idCompra',
+        'descripcion',
+    ];
+
     public static function obtenerCamposUsuario(): string
     {
         return '"' . implode(', ', self::USUARIO) . '"';
@@ -50,5 +55,10 @@ class CamposModel
     public static function obtenerCamposLicencia(): string
     {
         return '"' . implode(', ', self::LICENCIA) . '"';
+    }
+
+    public static function obtenerCamposTicket(): string
+    {
+        return '"' . implode(', ', self::TICKET) . '"';
     }
 }

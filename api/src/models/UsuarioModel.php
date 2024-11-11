@@ -32,4 +32,13 @@ class UsuarioModel extends DatabaseModel
         $query = "CALL updateData('$tabla','$camposValores',$id)";
         return self::execute($query, "SET");
     }
+    public static function login($usuario=""){
+        $query = "CALL login('$usuario')";
+        $resultado = self::execute($query, "GET");
+        if (count($resultado) == 0) {
+            return null;
+        } else {
+            return $resultado[0];
+        }
+    }
 }

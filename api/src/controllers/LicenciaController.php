@@ -45,11 +45,13 @@ class LicenciaController
     {
         $respuestas = (array)$request->getParsedBody();
         $valoresLicencia = [
-            'codigo' => $respuestas['codigo'],
+            'codigo' => LicenciaModel::generarCodigo(),
             'nombre' => $respuestas['nombre'],
             'genero' => $respuestas['genero'],
             'plataforma' => $respuestas['plataforma'],
             'clasificacion' => $respuestas['clasificacion'],
+            'precio' => $respuestas['precio'],
+            'urlImagen' => $respuestas['urlImagen']
         ];
         $licenciaFormateado = '"' . implode(', ', array_map(fn($valor) => "'$valor'", $valoresLicencia)) . '"';
         $camposLicencia = CamposModel::obtenerCamposLicencia();

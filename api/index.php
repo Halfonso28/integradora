@@ -1,19 +1,23 @@
 <?php
 
 use Slim\Factory\AppFactory;
+use App\Middleware\CorsMiddleware;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestFactoryInterface as Request;
 use Slim\Routing\RouteCollectorProxy;
 use App\Controllers\UsuarioController;
 use App\Controllers\SoporteController;
 use App\Controllers\LicenciaController;
+use App\Controllers\TicketController;
 
 require(__DIR__ . "/vendor/autoload.php");
 //header() se utiliza para ver el archivo en json en el navegador
 header('Content-Type: application/json; charset=utf-8');
 
-$app = AppFactory::create();
 
+
+$app = AppFactory::create();
+$app->add(new CorsMiddleware());
 
 //Para usar una sola vez un controlador solo usar en cadena "App\Controllers\UsuarioController:nombreFuncion"
 //Ejemplo $app->get("/getUsuarios", "App\Controllers\UsuarioController:getUsuarios");
@@ -24,6 +28,7 @@ $app->group('/usuario', function (RouteCollectorProxy $group) {
     $group->get("/getAll/{page}", UsuarioController::class . ":getAll");//Listo
     $group->get("/getAll", UsuarioController::class . ":getAll");//Listo
     $group->post("/add", UsuarioController::class . ":add");//Listo
+    $group->post("/login", UsuarioController::class . ":login");//Listo
     $group->delete("/delete/{id}", UsuarioController::class . ":deleteById");//Listo
     $group->put("/update/{id}", UsuarioController::class . ":update");//Listo
 });
@@ -50,12 +55,13 @@ $app->group('/licencia', function (RouteCollectorProxy $group) {
  
 // Ticket
 $app->group('/ticket', function (RouteCollectorProxy $group) {
-    $group->get("/getById/{id}", LicenciaController::class . ":getById");//Listo
-    $group->get("/getAll/{page}", LicenciaController::class . ":getAll");//Listo
-    $group->get("/getAll", LicenciaController::class . ":getAll");//Listo
-    $group->post("/add", LicenciaController::class . ":add");//Listo
-    $group->delete("/delete/{id}", LicenciaController::class . ":deleteById");//Listo
-    $group->put("/update/{id}", LicenciaController::class . ":update");//Licencia
+    $group->get("/getById/{id}", TicketController::class . ":getById");//Listo
+    $group->get("/getByUser/{id}", TicketController::class . ":getByUser");//Listo
+    $group->get("/getAll/{page}", TicketController::class . ":getAll");//Listo
+    $group->get("/getAll", TicketController::class . ":getAll");//Listo
+    $group->post("/add", TicketController::class . ":add");//Listo
+    $group->delete("/delete/{id}", TicketController::class . ":deleteById");//Listo
+    $group->put("/update/{id}", TicketController::class . ":update");//Licencia
 });
 
 

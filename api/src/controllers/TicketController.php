@@ -4,9 +4,8 @@ namespace App\Controllers;
 
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
-use App\Models\TicketModelModel;
-use App\Models\CamposModel;
 use App\Models\TicketModel;
+use App\Models\CamposModel;
 
 class TicketController
 {
@@ -21,6 +20,24 @@ class TicketController
                 return $response->withStatus(404);
             } else {
                 $response->getBody()->write(json_encode($licencia));
+                return $response->withStatus(200);
+            }
+        } else {
+            $response->getBody()->write("El Id debe ser un numero");
+            return $response->withStatus(400);
+        }
+    }
+
+    function getByUser(Request $request, Response $response, $args)
+    {
+        $id = $args["id"];
+        if (is_numeric($id)) {
+            $data = TicketModel::getByUser($id);
+            if ($data == []) {
+                $response->getBody()->write("No se encontraron tickets");
+                return $response->withStatus(404);
+            } else {
+                $response->getBody()->write(json_encode($data));
                 return $response->withStatus(200);
             }
         } else {

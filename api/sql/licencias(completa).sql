@@ -121,6 +121,7 @@ INSERT INTO `pregunta` (`id`, `pregunta`) VALUES
 
 CREATE TABLE `respuestas` (
   `id` int(11) NOT NULL,
+  `idTicket` int(11) NOT NULL,
   `idPregunta` int(11) DEFAULT NULL,
   `calificacion` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish_ci;
@@ -149,7 +150,6 @@ CREATE TABLE `soporte` (
 CREATE TABLE `ticket` (
   `id` int(11) NOT NULL,
   `idCompra` int(11) NOT NULL,
-  `idPregunta` int(11) NOT NULL,
   `idSoporte` int(11) NOT NULL,
   `descripcion` text NOT NULL,
   `fechaCreacion` datetime DEFAULT current_timestamp(),
@@ -220,7 +220,8 @@ ALTER TABLE `pregunta`
 --
 ALTER TABLE `respuestas`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `idPregunta` (`idPregunta`);
+  ADD KEY `idPregunta` (`idPregunta`),
+  ADD KEY `idTicket` (`idTicket`);
 
 --
 -- Indices de la tabla `soporte`
@@ -237,8 +238,7 @@ ALTER TABLE `soporte`
 --
 ALTER TABLE `ticket`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `idCompra` (`idCompra`),
-  ADD KEY `idPregunta` (`idPregunta`);
+  ADD KEY `idCompra` (`idCompra`);
 
 --
 -- Indices de la tabla `usuario`
@@ -314,7 +314,7 @@ ALTER TABLE `usuario`
 ALTER TABLE `asignaciones`
   ADD CONSTRAINT `asignaciones_ibfk_1` FOREIGN KEY (`idSoporte`) REFERENCES `soporte` (`id`),
   ADD CONSTRAINT `asignaciones_ibfk_2` FOREIGN KEY (`idAdmin`) REFERENCES `usuario` (`id`),
-  ADD CONSTRAINT `asignaciones_ibfk_4` FOREIGN KEY (`idJornada`) REFERENCES `jornada` (`id`);
+  ADD CONSTRAINT `asignaciones_ibfk_3` FOREIGN KEY (`idJornada`) REFERENCES `jornada` (`id`);
 
 --
 -- Filtros para la tabla `compra`
@@ -327,7 +327,10 @@ ALTER TABLE `compra`
 -- Filtros para la tabla `respuestas`
 --
 ALTER TABLE `respuestas`
-  ADD CONSTRAINT `respuestas_ibfk_1` FOREIGN KEY (`idPregunta`) REFERENCES `pregunta` (`id`);
+  ADD CONSTRAINT `respuestas_ibfk_1` FOREIGN KEY (`idPregunta`) REFERENCES `pregunta` (`id`),
+  ADD CONSTRAINT `respuestas_ibfk_2` FOREIGN KEY (`idTicket`) REFERENCES `ticket` (`id`);DELIMITER $$
+
+
 
 --
 -- Filtros para la tabla `soporte`
@@ -339,7 +342,6 @@ ALTER TABLE `soporte`
 --
 ALTER TABLE `ticket`
   ADD CONSTRAINT `ticket_ibfk_1` FOREIGN KEY (`idCompra`) REFERENCES `compra` (`id`),
-  ADD CONSTRAINT `ticket_ibfk_2` FOREIGN KEY (`idPregunta`) REFERENCES `pregunta` (`id`),
   ADD CONSTRAINT `ticket_ibfk_3` FOREIGN KEY (`idSoporte`) REFERENCES `soporte` (`id`);
 COMMIT;
 
@@ -445,5 +447,14 @@ BEGIN
     PREPARE stmt FROM @sql;
     EXECUTE stmt;
     DEALLOCATE PREPARE stmt;
+END $$
+DELIMITER ;
+
+DELIMITER $$
+CREATE PROCEDURE login(
+    IN usuario VARCHAR(100)
+)
+BEGIN
+    SELECT * FROM usuario WHERE usuario=usuario;
 END $$
 DELIMITER ;

@@ -1,0 +1,29 @@
+.titulo{
+    display: block;
+    margin: 0;
+    font-size: 40px;
+    font-weight: 600;
+    font-family: "Inconsolata", monospace;
+}
+.nameUser{
+    display: block;
+    margin: 0;
+    padding-right: 10px;
+    font-size: 20px;
+    font-weight: 600;
+}
+.labelTarjeta,
+.labelTarjetaNombre,
+.labelTarjetaGenero{
+    margin: 0;
+    font-size: 16px;
+    font-family: "Rubik", sans-serif;
+}
+.labelTarjetaNombre{
+    font-family: monospace;
+    font-size: 20px;
+    font-weight: 900;
+    letter-spacing: 2px;
+}
+
+@import url('https://fonts.googleapis.com/css2?family=Inconsolata:wght@200..900&family=Rubik:ital,wght@0,300..900;1,300..900&display=swap');

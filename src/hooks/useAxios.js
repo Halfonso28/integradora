@@ -1,45 +1,44 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 
-/**
- * Hook personalizado para realizar llamadas a API utilizando Axios.
- * 
- * @param {String} url - La URL de la API a la que se va a realizar la solicitud.
- * @param {Object} params - Parámetros opcionales para la solicitud, como datos de consulta o cuerpo de la solicitud.
- * @param {String} method - El método HTTP que se usará para la solicitud (por ejemplo, 'get', 'post', 'put', 'delete').
- * @returns {Object} - Devuelve un objeto con `data`, `status` y `error` obtenidos de la solicitud a la API.
- * 
- * Ejemplo de uso:
- * const { data, status, error } = useAxios("http://localhost/apirest/pacientes", {
- *   params: {
- *     page: 1
- *   }
- * }, "get");
- */
-export function useAxios(url, params, method) {
+export function useAxios(url, method = 'get', params = null, dependencies = []) {
     const [data, setData] = useState(null);
     const [status, setStatus] = useState(null);
     const [error, setError] = useState(null);
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
-        const getData = async () => {
+        const fetchData = async () => {
+            setLoading(true);
             try {
-                const response = await axios[method](url, params);
+                const config = {
+                    method,
+                    url,
+                    ...(method.toLowerCase() !== 'get' && params && { data: params }),
+                    ...(method.toLowerCase() === 'get' && params && { params }),
+                };
+
+                const response = await axios(config);
                 setStatus(response.status);
                 setData(response.data);
+                setError(null);
             } catch (err) {
                 if (err.response) {
-                    setStatus(err.response.status); // Establecer el estado HTTP si hay respuesta de error
-                    setError(err.response.data);    // Almacenar el mensaje de error del servidor
+                    setStatus(err.response.status);
+                    setError(err.response.data || 'Error en la solicitud');
                 } else {
-                    setError('Error al conectar con el servidor'); // Error de conexión
+                    setStatus(null);
+                    setError('Error al conectar con el servidor');
                 }
+            } finally {
+                setLoading(false);
             }
         };
-        if (url && method) {
-            getData();  // Solo ejecuta la solicitud si la URL y el método están definidos
-        }
-    }, []); // Dependencias actualizadas: el efecto se ejecutará si cambian estos valores
 
-    return { data, status, error }; // Devuelve la data, status y error al componente que lo consume
+        if (url) {
+            fetchData();
+        }
+    }, [url, method, ...dependencies]);
+
+    return { data, status, error, loading };
 }

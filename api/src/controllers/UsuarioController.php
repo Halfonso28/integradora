@@ -11,6 +11,33 @@ use App\Models\CamposModel;
 class UsuarioController
 {
 
+    function login(Request $request, Response $response, $args)
+    {
+        $body = (array)$request->getParsedBody();
+        $user = [
+            'usuario' => $body['usuario'],
+            'contraseña' => $body['contraseña']
+        ];
+        $userData = UsuarioModel::login($user["usuario"]);
+        if ($userData != null) {
+            $contraseñaHash = $userData["contraseña"];
+            if (password_verify($user["contraseña"], $contraseñaHash)) {
+                $token = [
+                    'token' => bin2hex(random_bytes(16))
+                ];
+                $data = $userData + $token;
+                $response->getBody()->write(json_encode($data));
+                return $response->withStatus(200);
+            } else {
+                $response->getBody()->write("Contraseña Incorrecta");
+                return $response->withStatus(400);
+            }
+        } else {
+            $response->getBody()->write("No se encontro al usuario " . $user["usuario"]);
+            return $response->withStatus(404);
+        }
+    }
+
     function getById(Request $request, Response $response, $args)
     {
         $id = $args["id"];
@@ -41,7 +68,7 @@ class UsuarioController
         return $response->withStatus(200);
     }
 
-    function add(Request $request,Response $response, $args)
+    function add(Request $request, Response $response, $args)
     {
         $respuestas = (array)$request->getParsedBody();
         $valoresUsuario = [
@@ -53,7 +80,7 @@ class UsuarioController
             'apellidoMaterno' => $respuestas['apellidoMaterno'],
             'fechaNacimiento' => $respuestas['fechaNacimiento'],
             'telefono' => $respuestas['telefono'],
-            'rol'=>'usuario'
+            'rol' => 'usuario'
         ];
         $usuarioFormateado = '"' . implode(', ', array_map(fn($valor) => "'$valor'", $valoresUsuario)) . '"';
         $camposUsuario = CamposModel::obtenerCamposUsuario();
@@ -107,13 +134,4 @@ class UsuarioController
             return $response->withStatus(400);
         }
     }
-
-
-
-    // Get all POST parameters
-    // $params = (array)$request->getParsedBody();
-
-    // Get a single POST parameter
-    // $foo = $params['foo'];
-
 }

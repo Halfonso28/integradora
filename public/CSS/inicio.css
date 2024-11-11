@@ -1,0 +1,52 @@
+body{
+  box-sizing: border-box;
+  overflow: hidden;
+}
+.fondo {
+  background-image: url("../IMG/fondoInicio.jpg");
+  font-family: "Geist", sans-serif;
+}
+.header{
+  height: 100%;
+}
+.labelHeader {
+  color: white;
+  font-size: 50px;
+  font-weight: 600;
+  margin: 10px;
+  margin-right: -160px;
+}
+.content {
+  height: 100%;
+}
+.contentFlex {
+  height: 600px;
+  margin-bottom: 100px;
+  margin-left: 100px;
+  padding-bottom: 50px;
+}
+.labelContent {
+  color: white;
+  display: block;
+}
+.labelJuegos {
+  font-size: 100px;
+  font-weight: 600;
+}
+.labelEslogan{
+  font-size: 40px;
+  margin-bottom: 25px;
+}
+.labelDescripcion{
+  padding: 10px;
+  border-radius: 8px;
+  letter-spacing: 3px;
+  background: white;
+  color: black;
+  font-size: 25px;
+}
+.footer{
+  background: black;
+}
+
+@import url('https://fonts.googleapis.com/css2?family=Geist:wght@100..900&display=swap');

@@ -37,6 +37,11 @@ class LicenciaModel extends DatabaseModel
         return self::execute($query, "SET");
     }
 
+    public static function getByUser($id=0){
+        $query = "CALL getLicenciaByUserId($id)";
+        return self::execute($query, "GET");
+    }
+
     public static function generarCodigo()
     {
         $codigo = '';

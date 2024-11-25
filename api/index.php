@@ -9,6 +9,7 @@ use App\Controllers\UsuarioController;
 use App\Controllers\SoporteController;
 use App\Controllers\LicenciaController;
 use App\Controllers\TicketController;
+use App\Controllers\CompraController;
 
 require(__DIR__ . "/vendor/autoload.php");
 //header() se utiliza para ver el archivo en json en el navegador
@@ -61,7 +62,18 @@ $app->group('/ticket', function (RouteCollectorProxy $group) {
     $group->get("/getAll", TicketController::class . ":getAll");//Listo
     $group->post("/add", TicketController::class . ":add");//Listo
     $group->delete("/delete/{id}", TicketController::class . ":deleteById");//Listo
-    $group->put("/update/{id}", TicketController::class . ":update");//Licencia
+    $group->put("/update/{id}", TicketController::class . ":update");//Listo
+});
+
+// Compra
+$app->group('/compra', function (RouteCollectorProxy $group) {
+    $group->get("/getById/{id}", CompraController::class . ":getById");//❌
+    $group->get("/getByUser/{id}", CompraController::class . ":getByUser");//❌
+    $group->get("/getAll/{page}", CompraController::class . ":getAll");//❌
+    $group->get("/getAll", CompraController::class . ":getAll");//❌
+    $group->post("/add", CompraController::class . ":add");//❌
+    $group->delete("/delete/{id}", CompraController::class . ":deleteById");//❌
+    $group->put("/update/{id}", CompraController::class . ":update");//❌
 });
 
 

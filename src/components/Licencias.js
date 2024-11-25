@@ -4,7 +4,11 @@ import { Flex } from 'antd';
 import Tarjeta from '../components/Tarjeta';
 
 const Licencias = () => {
-    const { data, status, error} = useAxios("http://localhost:8080/licencia/getAll", "get");
+    const { data, status, error } = useAxios({
+        url: "http://localhost:8080/licencia/getAll",
+        method: "get"
+    });
+
     return (
         <>
             {error && (
@@ -14,9 +18,10 @@ const Licencias = () => {
             )}
 
             {status === 200 && data && (
-                <Flex wrap gap="large" justify='center'>
+                <Flex wrap gap="large" justify="center">
                     {data.map(item => (
                         <Tarjeta
+                            key={item.id}
                             imagen={item.urlImagen}
                             nombre={item.nombre}
                             genero={item.genero}

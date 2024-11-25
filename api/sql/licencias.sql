@@ -41,6 +41,18 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `deleteById` (IN `tabla` VARCHAR(255
     DEALLOCATE PREPARE stmt;
 END$$
 
+
+CREATE PROCEDURE `getLicenciaByUserId` (IN `usuarioId` INT)
+BEGIN
+    SELECT l.*
+    FROM licencias l
+    JOIN compra c ON l.id = c.idLicencia
+    WHERE c.idUsuario = usuarioId;
+END$$
+
+
+
+
 CREATE DEFINER=`root`@`localhost` PROCEDURE `getAll` (IN `tabla` VARCHAR(255), IN `perPage` INT, IN `afterTo` INT, IN `condicion` VARCHAR(255))   BEGIN
     SET @sql = CONCAT('SELECT * FROM ', tabla);
     IF condicion IS NOT NULL AND condicion != '' THEN
@@ -67,6 +79,11 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `getTicketByUserId` (IN `usuarioId` 
     JOIN licencias.usuario AS u ON c.idUsuario = u.id
     WHERE u.id = usuarioId;
 END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `getCompraByUserId` (IN `usuarioId` INT)
+BEGIN
+    SELECT * FROM compra WHERE compra.idUsuario = usuarioId;
+END $$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `register` (IN `tabla` VARCHAR(255), IN `campos` VARCHAR(255), IN `valores` VARCHAR(255))   BEGIN
     SET @sql = CONCAT('INSERT INTO ', tabla, ' (', campos, ') VALUES (', valores, ')');
@@ -112,9 +129,9 @@ CREATE TABLE `asignaciones` (
 
 CREATE TABLE `compra` (
   `id` int NOT NULL,
-  `fechaCompra` date NOT NULL,
+  `fechaCompra` datetime DEFAULT CURRENT_TIMESTAMP,
   `idUsuario` int NOT NULL,
-  `idLicencias` int NOT NULL
+  `idLicencia` int NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish_ci;
 
 -- --------------------------------------------------------

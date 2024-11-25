@@ -13,28 +13,43 @@ class UsuarioController
 
     function login(Request $request, Response $response, $args)
     {
-        $body = (array)$request->getParsedBody();
-        $user = [
-            'usuario' => $body['usuario'],
-            'contraseña' => $body['contraseña']
-        ];
-        $userData = UsuarioModel::login($user["usuario"]);
-        if ($userData != null) {
-            $contraseñaHash = $userData["contraseña"];
-            if (password_verify($user["contraseña"], $contraseñaHash)) {
-                $token = [
-                    'token' => bin2hex(random_bytes(16))
-                ];
-                $data = $userData + $token;
-                $response->getBody()->write(json_encode($data));
-                return $response->withStatus(200);
+        // Detectar el tipo de contenido y procesar el cuerpo de la solicitud en consecuencia
+        if ($request->getHeaderLine('Content-Type') === 'application/json') {
+            // Obtener y decodificar JSON
+            $body = json_decode($request->getBody()->getContents(), true);
+        } else {
+            // Obtener datos del cuerpo como formulario
+            $body = (array)$request->getParsedBody();
+        }
+
+        // Verificar si el cuerpo contiene los campos necesarios
+        if (isset($body['usuario']) && isset($body['contraseña'])) {
+            $user = [
+                'usuario' => $body['usuario'],
+                'contraseña' => $body['contraseña']
+            ];
+
+            $userData = UsuarioModel::login($user["usuario"]);
+            if ($userData != null) {
+                $contraseñaHash = $userData["contraseña"];
+                if (password_verify($user["contraseña"], $contraseñaHash)) {
+                    $token = [
+                        'token' => bin2hex(random_bytes(16))
+                    ];
+                    $data = $userData + $token;
+                    $response->getBody()->write(json_encode($data));
+                    return $response->withStatus(200)->withHeader('Content-Type', 'application/json');
+                } else {
+                    $response->getBody()->write(json_encode(["error" => "Contraseña Incorrecta"]));
+                    return $response->withStatus(400)->withHeader('Content-Type', 'application/json');
+                }
             } else {
-                $response->getBody()->write("Contraseña Incorrecta");
-                return $response->withStatus(400);
+                $response->getBody()->write(json_encode(["error" => "No se encontró al usuario " . $user["usuario"]]));
+                return $response->withStatus(404)->withHeader('Content-Type', 'application/json');
             }
         } else {
-            $response->getBody()->write("No se encontro al usuario " . $user["usuario"]);
-            return $response->withStatus(404);
+            $response->getBody()->write(json_encode(["error" => "Faltan datos de usuario o contraseña"]));
+            return $response->withStatus(400)->withHeader('Content-Type', 'application/json');
         }
     }
 

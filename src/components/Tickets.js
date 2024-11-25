@@ -4,13 +4,16 @@ import { useAxios } from '../hooks/useAxios';
 import { Flex } from 'antd';
 import { ExclamationCircleFilled } from '@ant-design/icons';
 const Tickets = ({ id }) => {
-    const { data, status, error } = useAxios("http://localhost:8080/ticket/getByUser/"+id, "get");
+    const { data, status, error } = useAxios({
+        url: "http://localhost:8080/ticket/getByUser/" + id,
+        method: "get"
+    });
 
     const { confirm } = Modal;
     const [open, setOpen] = useState(false);
     const [confirmLoading, setConfirmLoading] = useState(false);
     const [modalText, setModalText] = useState('Content of the modal');
-    
+
     const showModal = () => {
         setOpen(true);
     };
@@ -55,7 +58,13 @@ const Tickets = ({ id }) => {
 
                 {status === 200 && data && (
                     <>
-                        
+                        {status === 200 && data && (
+                            <Flex wrap gap="large" justify="center">
+                                {data.map(item => (
+                                    <div>{item.descripcion}</div>
+                                ))}
+                            </Flex>
+                        )}
                     </>
                 )}
 

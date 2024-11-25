@@ -42,6 +42,11 @@ class CamposModel
         'descripcion',
     ];
 
+    public const COMPRA = [
+        'idUsuario',
+        'idLicencia',
+    ];
+
     public static function obtenerCamposUsuario(): string
     {
         return '"' . implode(', ', self::USUARIO) . '"';
@@ -60,5 +65,10 @@ class CamposModel
     public static function obtenerCamposTicket(): string
     {
         return '"' . implode(', ', self::TICKET) . '"';
+    }
+
+    public static function obtenerCamposCompra(): string
+    {
+        return '"' . implode(', ', self::COMPRA) . '"';
     }
 }

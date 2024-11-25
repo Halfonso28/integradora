@@ -1,11 +1,12 @@
 import React from "react";
-import { Button, Layout, Flex, Image, Checkbox, Form, Input } from 'antd';
+import { Button, Layout, Flex, Image } from 'antd';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faArrowDown,
   faPlus,
   faUserAstronaut
 } from '@fortawesome/free-solid-svg-icons';
+import { NavLink } from 'react-router-dom';
 
 const { Header, Footer, Content } = Layout;
 
@@ -21,7 +22,9 @@ const Inicio = () => {
           />
           <label className="labelHeader">GAMES X</label>
           <Flex gap={'middle'}>
-            <Button type="primary" shape="round" icon={<FontAwesomeIcon icon={faUserAstronaut} />} size={'large'} href="./dashboard">Iniciar Sesión</Button>
+            <Button type="primary" shape="round" icon={<FontAwesomeIcon icon={faUserAstronaut} />} size={'large'}>
+              <NavLink to="login">Iniciar Sesión</NavLink>
+            </Button>
             <Button type="primary" shape="round" icon={<FontAwesomeIcon icon={faPlus} />} size={'large'}>Registrarse</Button>
           </Flex>
         </Flex>

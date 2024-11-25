@@ -1,0 +1,29 @@
+body {
+  box-sizing: border-box;
+}
+.fondo {
+  background-image: url("../IMG/fondoInicio.jpg");
+  font-family: "Geist", sans-serif;
+}
+.formulario {
+  background: white;
+  border-radius: 5px;
+  padding: 20px;
+  width: 350px;
+  margin-top: 70px;
+  margin-bottom: 100px;
+}
+.logo{
+  width: 90%;
+  margin-bottom: 20px;
+  border-radius: 5px;
+}
+.input{
+  height: 45px;
+  font-size: 16px;
+}
+.boton{
+  height: 40px;
+  font-size: 16px;
+}
+@import url("https://fonts.googleapis.com/css2?family=Geist:wght@100..900&display=swap");

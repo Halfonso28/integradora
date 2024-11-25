@@ -1,13 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import {
+  BrowserRouter,
+  Route,
+  Routes
+} from 'react-router-dom';
 import { Flex } from 'antd';
-import Dashboard from './components/Dashboard';
-import Inicio from './components/Inicio';
+import Dashboard from './components/pages/Dashboard';
+import Inicio from './components/pages/Inicio';
 import Licencias from './components/Licencias';
 import Tickets from './components/Tickets';
-import Login from './components/Login';
-import PrivateRoute from './components/session/PrivateRoute';
-import { AuthProvider } from './components/session/AuthContext';
+import Login from './components/pages/Login';
+import Compras from './components/Compras';
+// import PrivateRoute from './components/session/PrivateRoute';
+// import { AuthProvider } from './components/session/AuthContext';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   AuditOutlined,
@@ -15,22 +20,30 @@ import {
 } from '@ant-design/icons';
 import {
   faHouse,
-  faGamepad
+  faGamepad,
+  faCartShopping
 } from '@fortawesome/free-solid-svg-icons';
+import Autenticador from './components/session/Autenticador';
 
 
 const App = () => {
   const [items, setItems] = useState([]);
   const [contenido, setContenido] = useState(<div>Inicio</div>);
+  const userData = JSON.parse(sessionStorage.getItem("userData"));
 
   useEffect(() => {
-    const menuItems = [
+    const menuItemsUsuario = [
       { key: '1', icon: <FontAwesomeIcon icon={faHouse} />, label: 'Inicio' },
       { key: '2', icon: <FontAwesomeIcon icon={faGamepad} />, label: 'Licencias' },
-      { key: '3', icon: <AuditOutlined />, label: 'Tickets' },
-      { key: '4', icon: <PieChartOutlined />, label: 'Gráficas' }
+      { key: '3', icon: <FontAwesomeIcon icon={faCartShopping} />, label: 'Compras' },
+      { key: '4', icon: <AuditOutlined />, label: 'Tickets' },
+      { key: '5', icon: <PieChartOutlined />, label: 'Gráficas' }
     ];
-    setItems(menuItems);
+    if (userData.rol == "usuario") {
+      setItems(menuItemsUsuario);
+    }
+
+
   }, []);
 
   const onMenuSelect = ({ key }) => {
@@ -47,7 +60,10 @@ const App = () => {
         );
         break;
       case '3':
-        setContenido(<Tickets id={1} />);
+        setContenido(<Compras id={userData.id} />);
+        break;
+      case '4':
+        setContenido(<Tickets id={userData.id} />);
         break;
       default:
         setContenido(<div>Graficas</div>);
@@ -55,35 +71,52 @@ const App = () => {
   };
 
   return (
-    <AuthProvider>
-      <Router>
-        <Routes>
-          <Route
-            path=""
-            element={
-              <Inicio></Inicio>
-            }
-          />
-          <Route
-            path="/login"
-            element={
-              <Login></Login>
-            }
-          />
-          <Route element={<PrivateRoute />}>
-            <Route path="/dashboard" element={
-              <Dashboard
-                contenido={contenido}
-                selectKey="1"
-                items={items}
-                onMenuSelect={onMenuSelect}
-                nameUser='Lael28'
-              ></Dashboard>}
+    // <AuthProvider>
+    <BrowserRouter>
+      <Routes>
+        <Route
+          path=""
+          element={
+            <Inicio></Inicio>
+          }
+        />
+        <Route
+          path="/login"
+          element={
+            <Login></Login>
+          }
+        />
+        <Route
+          path="/autenticar"
+          element={
+            <Autenticador />
+          }
+        />
+
+
+        {/* <Route element={<PrivateRoute />}> */}
+        <Route
+          path="/dashboard"
+          element={
+            <Dashboard
+              contenido={contenido}
+              selectKey="1"
+              items={items}
+              onMenuSelect={onMenuSelect}
+              nameUser={userData.usuario}
             />
-          </Route>
-        </Routes>
-      </Router>
-    </AuthProvider>
+          }
+        >
+        </Route>
+        <Route
+          path='*'
+          element={<div>ERORR 404</div>}
+        />
+
+        {/* </Route> */}
+      </Routes>
+    </BrowserRouter>
+    // </AuthProvider>
   );
 };
 export default App;

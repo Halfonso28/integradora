@@ -63,7 +63,7 @@ class TicketController
         $respuestas = (array)$request->getParsedBody();
         $valores= [
             'idCompra' => $respuestas['idCompra'],
-            'descripcion' => $respuestas['descripcion'],
+            'descripcion' => $respuestas['descripcion']
         ];
         $valoresFormateados = '"' . implode(', ', array_map(fn($valor) => "'$valor'", $valores)) . '"';
         $campos = CamposModel::obtenerCamposTicket();

@@ -34,12 +34,19 @@ class CompraController
         if (is_numeric($id)) {
             $data1 = CompraModel::getByUser($id);
             $data2 =  LicenciaModel::getByUser($id);
-            $data =array_combine($data1,$data2);
+            $data = [];
+            foreach ($data1 as $item1) {
+                foreach ($data2 as $item2) {
+                    if ($item1['id'] === $item2['id']) {
+                        $data[] = array_merge($item1, $item2);
+                    }
+                }
+            }
             if ($data1 == []) {
                 $response->getBody()->write("No se encontraron compras");
                 return $response->withStatus(404);
             } else {
-                
+
                 $response->getBody()->write(json_encode($data));
                 return $response->withStatus(200);
             }

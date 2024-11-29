@@ -3,7 +3,7 @@ import { useAxios } from '../hooks/useAxios';
 import { Flex } from 'antd';
 import Tarjeta from '../components/Tarjeta';
 
-const Licencias = () => {
+const Licencias = ({id}) => {
     const { data, status, error } = useAxios({
         url: "http://localhost:8080/licencia/getAll",
         method: "get"
@@ -21,7 +21,8 @@ const Licencias = () => {
                 <Flex wrap gap="large" justify="center">
                     {data.map(item => (
                         <Tarjeta
-                            key={item.id}
+                            id={item.id}
+                            idUser={id}
                             imagen={item.urlImagen}
                             nombre={item.nombre}
                             genero={item.genero}

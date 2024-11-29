@@ -1,102 +1,95 @@
-import React, { useState } from 'react';
-import { Button, Modal } from 'antd';
+import React, { useState, useEffect } from 'react';
+import { Table, Button, DatePicker, Space, Select } from 'antd';
 import { useAxios } from '../hooks/useAxios';
-import { Flex } from 'antd';
-import { ExclamationCircleFilled } from '@ant-design/icons';
+
 const Tickets = ({ id }) => {
+    const { Column } = Table;
     const { data, status, error } = useAxios({
         url: "http://localhost:8080/ticket/getByUser/" + id,
         method: "get"
     });
 
-    const { confirm } = Modal;
-    const [open, setOpen] = useState(false);
-    const [confirmLoading, setConfirmLoading] = useState(false);
-    const [modalText, setModalText] = useState('Content of the modal');
+    const [filteredData, setFilteredData] = useState([]); // Estado para los tickets filtrados
+    const { Option } = Select;
 
-    const showModal = () => {
-        setOpen(true);
-    };
-    const handleOk = () => {
-        setModalText('The modal will be closed after two seconds');
-        setConfirmLoading(true);
-        setTimeout(() => {
-            setOpen(false);
-            setConfirmLoading(false);
-        }, 2000);
-    };
-    const handleCancel = () => {
-        console.log('Clicked cancel button');
-        setOpen(false);
+    // Inicializar filteredData con todos los tickets cuando se obtienen
+    useEffect(() => {
+        if (data) {
+            setFilteredData(data);  // Inicializa con todos los datos al cargar
+        }
+    }, [data]);
+
+    // Filtro por Estado
+    const handleStateFilter = (value) => {
+        let filtered = data;
+
+        if (value && value !== 'all') {
+            filtered = data.filter(ticket => ticket.estado === value);
+        }
+
+        setFilteredData(filtered);  // Establece los tickets filtrados
     };
 
-    const showDeleteConfirm = () => {
-        confirm({
-            title: 'Are you sure delete this task?',
-            icon: <ExclamationCircleFilled />,
-            content: 'Some descriptions',
-            okText: 'Yes',
-            okType: 'danger',
-            cancelText: 'No',
-            onOk() {
-                console.log('OK');
-            },
-            onCancel() {
-                console.log('Cancel');
-            },
-        });
+    // Filtro por Fecha
+    const handleDateFilter = (date, dateString) => {
+        let filtered = data;
+
+        if (dateString) {
+            filtered = data.filter(ticket => ticket.fechaCreacion.startsWith(dateString));
+        }
+
+        setFilteredData(filtered);
     };
 
     return (
         <>
-            <Flex>
-                {error && (
-                    <p style={{ color: 'red' }}>
-                        Error {status}: {error.message ? error.message : error}
-                    </p>
-                )}
+            <Space style={{ marginBottom: 16 }}>
+                <Select
+                    defaultValue="all"
+                    style={{ width: 120 }}
+                    onChange={handleStateFilter}
+                >
+                    <Option value="all">Todos</Option>
+                    <Option value="Nuevo">Nuevo</Option>
+                    <Option value="En progreso">En progreso</Option>
+                    <Option value="Finalizado">Finalizado</Option>
+                </Select>
+                <DatePicker
+                    style={{ width: 150 }}
+                    onChange={handleDateFilter}
+                    format="YYYY-MM-DD"
+                    placeholder="Filtrar por fecha"
+                />
+            </Space>
 
-                {status === 200 && data && (
-                    <>
-                        {status === 200 && data && (
-                            <Flex wrap gap="large" justify="center">
-                                {data.map(item => (
-                                    <div>{item.descripcion}</div>
-                                ))}
-                            </Flex>
-                        )}
-                    </>
-                )}
-
-                {status === 400 && (
-                    <p>Acción no válida o parámetros faltantes.</p>
-                )}
-
-                {status === 405 && (
-                    <p>Método no permitido.</p>
-                )}
-
-                {!data && !error && (
-                    <p>Cargando...</p>
-                )}
-            </Flex>
-            <Button type="primary" onClick={showModal}>
-                Open Modal with async logic
-            </Button>
-            <Modal
-                title="Title"
-                open={open}
-                onOk={handleOk}
-                confirmLoading={confirmLoading}
-                onCancel={handleCancel}
-            >
-                <p>{modalText}</p>
-            </Modal>
-            <Button onClick={showDeleteConfirm} type="dashed">
-                Delete
-            </Button>
+            <Table dataSource={filteredData} rowKey="id" pagination={{ pageSize: 5 }}>
+                <Column title="Id" dataIndex="id" key="id" />
+                <Column title="Id Compra" dataIndex="idCompra" key="idCompra" />
+                <Column title="Id Soporte" dataIndex="idSoporte" key="idSoporte" />
+                <Column title="Descripcion" dataIndex="descripcion" key="descripcion" />
+                <Column title="Fecha de Creacion" dataIndex="fechaCreacion" key="fechaCreacion" />
+                <Column title="Fecha de Cierre" dataIndex="fechaCierre" key="fechaCierre" />
+                <Column title="Estado" dataIndex="estado" key="estado" />
+                <Column
+                    title="Acciones"
+                    key="action"
+                    render={(_, record) => (
+                        <>
+                            {record.estado === 'En progreso' && (
+                                <Button
+                                    type="primary"
+                                    onClick={() => console.log('Abrir modal para:', record.id)}
+                                    style={{ marginRight: '8px' }}
+                                >
+                                    Responder
+                                </Button>
+                            )}
+                        </>
+                    )}
+                />
+            </Table>
         </>
     );
-}
+};
 
 export default Tickets;

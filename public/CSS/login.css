@@ -3,6 +3,7 @@ body {
 }
 .fondo {
   background-image: url("../IMG/fondoInicio.jpg");
+  background-size: cover;
   font-family: "Geist", sans-serif;
 }
 .formulario {
@@ -11,7 +12,7 @@ body {
   padding: 20px;
   width: 350px;
   margin-top: 70px;
-  margin-bottom: 100px;
+  margin-bottom: 150px;
 }
 .logo{
   width: 90%;

@@ -41,7 +41,6 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `deleteById` (IN `tabla` VARCHAR(255
     DEALLOCATE PREPARE stmt;
 END$$
 
-
 CREATE PROCEDURE `getLicenciaByUserId` (IN `usuarioId` INT)
 BEGIN
     SELECT l.*
@@ -49,9 +48,6 @@ BEGIN
     JOIN compra c ON l.id = c.idLicencia
     WHERE c.idUsuario = usuarioId;
 END$$
-
-
-
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `getAll` (IN `tabla` VARCHAR(255), IN `perPage` INT, IN `afterTo` INT, IN `condicion` VARCHAR(255))   BEGIN
     SET @sql = CONCAT('SELECT * FROM ', tabla);
@@ -214,11 +210,11 @@ CREATE TABLE `respuestas` (
 
 CREATE TABLE `soporte` (
   `id` int NOT NULL,
-  `idUsuario` int DEFAULT NULL,
-  `curp` char(18) COLLATE utf8mb4_spanish_ci NOT NULL,
-  `rfc` varchar(13) COLLATE utf8mb4_spanish_ci NOT NULL,
-  `nss` char(11) COLLATE utf8mb4_spanish_ci NOT NULL,
-  `urlIne` varchar(255) COLLATE utf8mb4_spanish_ci DEFAULT 'Sin INE'
+  `idUsuario` int NOT NULL,
+  `curp` char(18) COLLATE utf8mb4_spanish_ci,
+  `rfc` varchar(13) COLLATE utf8mb4_spanish_ci,
+  `nss` char(11) COLLATE utf8mb4_spanish_ci,
+  `urlIne` varchar(255) COLLATE utf8mb4_spanish_ci
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish_ci;
 
 -- --------------------------------------------------------
@@ -230,7 +226,7 @@ CREATE TABLE `soporte` (
 CREATE TABLE `ticket` (
   `id` int NOT NULL,
   `idCompra` int NOT NULL,
-  `idSoporte` int NOT NULL,
+  `idSoporte` int,
   `descripcion` text COLLATE utf8mb4_spanish_ci NOT NULL,
   `fechaCreacion` datetime DEFAULT CURRENT_TIMESTAMP,
   `fechaCierre` datetime DEFAULT NULL,
@@ -320,7 +316,8 @@ ALTER TABLE `soporte`
 ALTER TABLE `ticket`
   ADD PRIMARY KEY (`id`),
   ADD KEY `idCompra` (`idCompra`),
-  ADD KEY `ticket_ibfk_3` (`idSoporte`);
+  ADD KEY `ticket_ibfk_3` (`idSoporte`),
+  ADD UNIQUE(`idCompra`);
 
 --
 -- Indices de la tabla `usuario`

@@ -28,8 +28,9 @@ class UsuarioController
                 'usuario' => $body['usuario'],
                 'contraseña' => $body['contraseña']
             ];
+            $contraseñaHash = $user["contraseña"];
 
-            $userData = UsuarioModel::login($user["usuario"]);
+            $userData = UsuarioModel::login($user["usuario"],$contraseñaHash);
             if ($userData != null) {
                 $contraseñaHash = $userData["contraseña"];
                 if (password_verify($user["contraseña"], $contraseñaHash)) {
